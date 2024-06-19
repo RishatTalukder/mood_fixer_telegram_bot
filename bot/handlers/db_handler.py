@@ -1,25 +1,27 @@
-# bot/handlers/db_handler.py
-
-from bot.database.db_setup import init_db,SessionLocal
-from bot.database.functions import add_placeholders,get_jokes
+from bot.database.db_setup import init_db, SessionLocal
+from bot.database.functions import add_placeholders, get_jokes
 
 def setup_database():
     """
     Initializes the database and adds placeholder data.
     """
-    init_db()  # This function initializes the database and binds it to SessionLocal
-    print("Database initialized successfully.")
+    try:
+        init_db()  # This function initializes the database and binds it to SessionLocal
+        print("Database initialized successfully.")
 
-    Session = SessionLocal()
+        session = SessionLocal()
 
-    if get_jokes(Session):
-        print("Database already contains data.")
-        Session.close()
-        return
+        if get_jokes(session):
+            print("Database already contains data.")
+            session.close()
+            return
 
-    # Add placeholder data
-    add_placeholders()
-    Session.close()
+        # Add placeholder data
+        add_placeholders()
+    except Exception as e:
+        print(f"Error setting up database: {e}")
+    finally:
+        session.close()
 
 def register():
     """
